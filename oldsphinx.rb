@@ -47,4 +47,36 @@ class OldSphinx < Formula
               --with-libstemmer]
 
     args << "--enable-id64" if build.include? 'id64'
+
+    %w{mysql pgsql}.each do |db|
+      if build.include? db
+        args << "--with-#{db}"
+      else
+        args << "--without-#{db}"
+      end
+    end
+
+    system "./configure", *args
+    system "make install"
+  end
+
+  def caveats; <<-EOS.undent
+    Sphinx has been compiled with libstemmer support.
+
+    Sphinx depends on either MySQL or PostreSQL as a datasource.
+
+    You can install these with Homebrew with:
+      brew install mysql
+        For MySQL server.
+
+      brew install mysql-connector-c
+        For MySQL client libraries only.
+
+      brew install postgresql
+        For PostgreSQL server.
+
+    We don't install these for you when you install this formula, as
+    we don't know which datasource you intend to use.
+    EOS
+  end
 end
