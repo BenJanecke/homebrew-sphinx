@@ -23,18 +23,18 @@ class Oldsphinx < Formula
   end
 
   def install
-    lstem = Pathname.pwd+'libstemmer_c'
-    lstem.mkpath
-    Libstemmer.new.brew { mv Dir['*'], lstem }
- 
-    args = ["--prefix=#{prefix}",
-            "--disable-debug",
-            "--disable-dependency-tracking",
-            "--localstatedir=#{var}"]
- 
-    # always build with libstemmer support
+    (buildpath/'libstemmer_c').install resource('stemmer')
+
+    args = %W[--prefix=#{prefix}
+              --disable-dependency-tracking
+              --localstatedir=#{var}
+              --with-libstemmer]
+              
+    # always
     args << "--with-libstemmer"
- 
+    
+    args << "--enable-id64" if build.include? 'id64'
+
     system "./configure", *args
     system "make install"
   end
