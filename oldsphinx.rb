@@ -1,61 +1,50 @@
 require 'formula'
- 
-class Libstemmer < Formula
-  # upstream is constantly changing the tarball,
-  # so doing checksum verification here would require
-  # constant, rapid updates to this formula.
-  head 'http://snowball.tartarus.org/dist/libstemmer_c.tgz'
-  homepage 'http://snowball.tartarus.org/'
-end
- 
-class Sphinx < Formula
-  url 'http://sphinxsearch.com/files/archive/sphinx-0.9.9.tar.gz'
-  version '0.9.9'
+
+class OldSphinx < Formula
   homepage 'http://www.sphinxsearch.com'
+  url 'http://sphinxsearch.com/files/archive/sphinx-0.9.9.tar.gz'
+
   head 'http://sphinxsearch.googlecode.com/svn/trunk/'
- 
-  fails_with_llvm "ld: rel32 out of range in _GetPrivateProfileString from /usr/lib/libodbc.a(SQLGetPrivateProfileString.o)",
-    :build => 2334
- 
+
+  bottle do
+  end
+
+  devel do
+    url 'http://sphinxsearch.com/files/archive/sphinx-0.9.9.tar.gz'
+    sha1 'ef78cebeae32a0582df504d74d6dd2ded81b73d9'
+  end
+
+  option 'mysql', 'Force compiling against MySQL'
+  option 'pgsql', 'Force compiling against PostgreSQL'
+  option 'id64',  'Force compiling with 64-bit ID support'
+
+  depends_on "re2" => :optional
+  depends_on :mysql if build.include? 'mysql'
+  depends_on :postgresql if build.include? 'pgsql'
+
+  # http://snowball.tartarus.org/
+  resource 'stemmer' do
+    url 'http://snowball.tartarus.org/dist/libstemmer_c.tgz'
+    sha1 'bbe1ba5bbebb146575a575b8ca3342aa3b91bf93'
+  end
+
+  fails_with :llvm do
+    build 2334
+    cause "ld: rel32 out of range in _GetPrivateProfileString from /usr/lib/libodbc.a(SQLGetPrivateProfileString.o)"
+  end
+
+  fails_with :clang do
+    build 421
+    cause "sphinxexpr.cpp:1802:11: error: use of undeclared identifier 'ExprEval'"
+  end
+
   def install
-    lstem = Pathname.pwd+'libstemmer_c'
-    lstem.mkpath
-    Libstemmer.new.brew { mv Dir['*'], lstem }
- 
-    args = ["--prefix=#{prefix}",
-            "--disable-debug",
-            "--disable-dependency-tracking",
-            "--localstatedir=#{var}"]
- 
-    # always build with libstemmer support
-    args << "--with-libstemmer"
- 
-    # configure script won't auto-select PostgreSQL
-    args << "--with-pgsql" if `/usr/bin/which pg_config`.size > 0
-    args << "--without-mysql" unless `/usr/bin/which mysql`.size > 0
- 
-    system "./configure", *args
-    system "make install"
-  end
- 
-  def caveats
-    <<-EOS.undent
-    Sphinx has been compiled with libstemmer support.
- 
-    Sphinx depends on either MySQL or PostreSQL as a datasource.
- 
-    You can install these with Homebrew with:
-      brew install mysql
-        For MySQL server.
- 
-      brew install mysql-connector-c
-        For MySQL client libraries only.
- 
-      brew install postgresql
-        For PostgreSQL server.
- 
-    We don't install these for you when you install this formula, as
-    we don't know which datasource you intend to use.
-    EOS
-  end
+    (buildpath/'libstemmer_c').install resource('stemmer')
+
+    args = %W[--prefix=#{prefix}
+              --disable-dependency-tracking
+              --localstatedir=#{var}
+              --with-libstemmer]
+
+    args << "--enable-id64" if build.include? 'id64'
 end
