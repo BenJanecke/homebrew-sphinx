@@ -32,14 +32,6 @@ class OldSphinx < Formula
 
     args << "--enable-id64" if build.include? 'id64'
 
-    %w{mysql pgsql}.each do |db|
-      if build.include? db
-        args << "--with-#{db}"
-      else
-        args << "--without-#{db}"
-      end
-    end
-
     system "./configure", *args
     system "make install"
   end
