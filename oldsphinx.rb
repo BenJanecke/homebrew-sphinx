@@ -5,15 +5,7 @@ class OldSphinx < Formula
   url 'http://sphinxsearch.com/files/archive/sphinx-0.9.9.tar.gz'
 
   head 'http://sphinxsearch.googlecode.com/svn/trunk/'
-
-  bottle do
-  end
-
-  devel do
-    url 'http://sphinxsearch.com/files/archive/sphinx-0.9.9.tar.gz'
-    sha1 'ef78cebeae32a0582df504d74d6dd2ded81b73d9'
-  end
-
+  
   option 'mysql', 'Force compiling against MySQL'
   option 'pgsql', 'Force compiling against PostgreSQL'
   option 'id64',  'Force compiling with 64-bit ID support'
