@@ -5,14 +5,6 @@ class OldSphinx < Formula
   url 'http://sphinxsearch.com/files/archive/sphinx-0.9.9.tar.gz'
 
   head 'http://sphinxsearch.googlecode.com/svn/trunk/'
-  
-  option 'mysql', 'Force compiling against MySQL'
-  option 'pgsql', 'Force compiling against PostgreSQL'
-  option 'id64',  'Force compiling with 64-bit ID support'
-
-  depends_on "re2" => :optional
-  depends_on :mysql if build.include? 'mysql'
-  depends_on :postgresql if build.include? 'pgsql'
 
   # http://snowball.tartarus.org/
   resource 'stemmer' do
