@@ -9,7 +9,7 @@ class Libstemmer < Formula
 end
  
 class Sphinx < Formula
-  url 'http://sphinxsearch.com/files/sphinx-0.9.9.tar.gz'
+  url 'http://sphinxsearch.com/files/archive/sphinx-0.9.9.tar.gz'
   version '0.9.9'
   homepage 'http://www.sphinxsearch.com'
   head 'http://sphinxsearch.googlecode.com/svn/trunk/'
