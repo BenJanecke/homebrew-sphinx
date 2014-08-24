@@ -1,6 +1,6 @@
 require 'formula'
 
-class OldSphinx < Formula
+class Oldsphinx < Formula
   homepage 'http://www.sphinxsearch.com'
   url 'http://sphinxsearch.com/files/archive/sphinx-0.9.9.tar.gz'
 
