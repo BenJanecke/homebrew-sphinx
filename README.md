@@ -10,3 +10,8 @@ brew tap benjanecke/sphinx
 brew install oldsphinx
 ```
 You will need xcode4 to compile this.
+
+You can use something like this to switch xcode versions on osx
+```
+sudo xcode-select --switch /Applications/Xcode4.app/Contents/Developer
+```
